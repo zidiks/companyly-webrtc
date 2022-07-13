@@ -49,7 +49,7 @@ serverSocket.listen(portSocket, () => {
     console.log(`Socket server listening at port:${portSocket}`);
 });
 serverPeer.listen(portPeer, () => {
-    console.log(`Socket server listening at port:${portPeer}`);
+    console.log(`Peer server listening at port:${portPeer}`);
 });
 
 
