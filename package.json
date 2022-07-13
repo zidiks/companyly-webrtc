@@ -5,7 +5,8 @@
   "main": "server.js",
   "scripts": {
     "dev": "nodemon",
-    "build": "tsc"
+    "build": "tsc",
+    "start": "npm run build && node dist/server.js"
   },
   "author": "",
   "license": "ISC",
@@ -19,6 +20,7 @@
   "dependencies": {
     "@types/socket.io": "^3.0.2",
     "@types/uuid": "^8.3.4",
+    "cors": "^2.8.5",
     "dotenv": "^16.0.1",
     "express": "^4.18.1",
     "peer": "^0.6.1",

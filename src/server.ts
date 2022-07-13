@@ -5,6 +5,7 @@ import { createServer } from "http";
 import { Server, Socket } from "socket.io";
 import { ProtocolToServer, SocketProtocol } from "./protocol";
 import { RoomService } from "./room/room.service";
+import cors  from "cors";
 
 dotenv.config();
 
@@ -12,7 +13,9 @@ const portSocket = process.env.SOCKET_PORT;
 const portPeer = process.env.PEER_PORT;
 
 const appSocket: Express = express();
+appSocket.use(cors());
 const appPeer: Express = express();
+appPeer.use(cors());
 const serverSocket = createServer(appSocket);
 const serverPeer = createServer(appPeer);
 const peerServer = ExpressPeerServer(serverPeer);
