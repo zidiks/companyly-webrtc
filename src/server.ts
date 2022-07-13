@@ -45,8 +45,8 @@ io.on(SocketProtocol.connection, (socket: Socket) => {
     });
 });
 
-serverSocket.listen(portSocket);
-serverPeer.listen(portPeer);
+serverSocket.listen(3002);
+serverPeer.listen(3001);
 
 
 
