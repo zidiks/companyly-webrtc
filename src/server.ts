@@ -1,8 +1,7 @@
 import express, { Express } from "express";
 import dotenv from 'dotenv';
 import { ExpressPeerServer } from 'peer';
-import { createServer } from "http";
-import { createServer as createSslServer } from "https";
+import { createServer } from "https";
 import { Server, Socket } from "socket.io";
 import { ProtocolToServer, SocketProtocol } from "./protocol";
 import { RoomService } from "./room/room.service";
@@ -18,12 +17,17 @@ const appSocket: Express = express();
 appSocket.use(cors());
 const appPeer: Express = express();
 appPeer.use(cors());
-const serverSocket = createSslServer({
+
+const serverSocket = createServer({
     key: fs.readFileSync('/etc/letsencrypt/live/clikl.ru/privkey.pem', 'utf8'),
     cert: fs.readFileSync('/etc/letsencrypt/live/clikl.ru/cert.pem', 'utf8'),
 }, appSocket);
 
-const serverPeer = createServer(appPeer);
+const serverPeer = createServer({
+    key: fs.readFileSync('/etc/letsencrypt/live/clikl.ru/privkey.pem', 'utf8'),
+    cert: fs.readFileSync('/etc/letsencrypt/live/clikl.ru/cert.pem', 'utf8'),
+}, appPeer);
+
 const peerServer = ExpressPeerServer(serverPeer);
 const io = new Server(serverSocket, {
     cors: {
