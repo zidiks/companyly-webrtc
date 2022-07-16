@@ -1,18 +1,34 @@
 export enum ProtocolToClient {
-    connected = 'user-connected',
-    disconnected = 'user-disconnected',
-    rooms = 'rooms-list',
-    error = 'error',
-}
-
-export enum ProtocolErrors {
-    userExists = '0',
+    MEMBER_JOINED = 'member-joined',
+    MEMBER_LEFT = 'member-left',
+    SHARE_JOINED = 'share-joined',
+    SHARE_LEFT = 'share-left',
+    ROOMS_LIST = 'rooms-list',
+    ROOM_DATA = 'room-data',
+    SERVER_MESSAGE = 'system-message',
 }
 
 export enum ProtocolToServer {
-    join = 'join-room',
-    leave = 'leave-room',
-    create = 'create-room',
+    JOIN_MEMBER = 'join-member',
+    LEAVE_MEMBER = 'leave-member',
+    UPDATE_MEMBER = 'update-member',
+    CREATE_ROOM = 'create-room',
+    DELETE_ROOM = 'delete-room',
+    UPDATE_ROOM = 'update-room',
+    NEW_MESSAGE = 'new-message',
+}
+
+export enum ServerMessageTypes {
+    ERROR = 'ERROR',
+    REQUEST_KEY = 'REQUEST_KEY',
+    CONNECTED = 'CONNECTED',
+    DISCONNECTED = 'DISCONNECTED',
+    NOTIFICATION = 'NOTIFICATION',
+}
+
+export interface ServerMessage<T> {
+    code: ServerMessageTypes;
+    message: T;
 }
 
 export enum SocketProtocol {

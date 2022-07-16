@@ -1,11 +1,26 @@
 export class Member {
-    peerId: string;
+    mainPeerId: string;
+    sharePeerId?: string;
     userId: string;
-    cam: boolean = false;
-    mic: boolean = false;
+    socketId: string;
+    name: string;
+    avatar: string;
+    camState: boolean = false;
+    micState: boolean = false;
+    screenShare: boolean = false;
 
-    constructor(peerId: string, userId: string) {
-        this.peerId = peerId;
-        this.userId = userId;
+    constructor(data: RegisterMemberData, socketId: string) {
+        this.mainPeerId = data.mainPeerId;
+        this.userId = data.userId;
+        this.name = data.name;
+        this.avatar = data.avatar;
+        this.socketId = socketId;
     }
+}
+
+export interface RegisterMemberData {
+    mainPeerId: string;
+    userId: string;
+    name: string;
+    avatar: string;
 }
