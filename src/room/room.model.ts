@@ -21,7 +21,6 @@ export interface RoomObject {
     startTime: number | null;
     privateMode: boolean;
     key?: string;
-    messages: Message[];
     members: Member[];
     invites: string[];
     moderators: string[];

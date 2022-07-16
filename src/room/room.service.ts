@@ -7,6 +7,8 @@ import { Member, RegisterMemberData } from "./member.model";
 import { ServerMessageConnectedDto } from "./dto/server-message-connected.dto";
 import { ServerMessageDisconnectedDto } from "./dto/server-message-disconnected.dto";
 import { ServerMessageRequestKeyDto } from "./dto/server-message-request-key.dto";
+import { Message, MessageTypes } from "./message.model";
+import { NewMessageDto } from "./dto/new-message.dto";
 
 const DELETE_ROOM_DELAY = 30000;
 
@@ -22,6 +24,14 @@ export class RoomService {
 
     private sendRooms(): void {
         this.socketServer.emit(ProtocolToClient.ROOMS_LIST, JSON.stringify(this.roomsListToRoomsPrevList(this.roomsList)));
+    }
+
+    private sendMessages(roomId: string): void {
+        const room: Room | undefined = this.roomsList.get(roomId);
+        if (room) {
+            const messages = room.messages;
+            this.socketServer.to(roomId).emit(ProtocolToClient.MESSAGES_LIST, JSON.stringify(messages));
+        }
     }
 
     private sendRoom(roomId: string): void {
@@ -56,7 +66,6 @@ export class RoomService {
             startTime: room.startTime,
             privateMode: room.privateMode,
             key: room.key,
-            messages: room.messages,
             members: Object.values(Object.fromEntries(room.members.entries())),
             invites: Array.from(room.invites),
             moderators: Array.from(room.moderators),
@@ -117,8 +126,12 @@ export class RoomService {
                             userId: data.userId,
                         }
                     }));
+                    if (room.startTime === null) {
+                        room.startTime = new Date().getTime();
+                    }
                     this.sendRooms();
                     this.sendRoom(roomId);
+                    this.pushSystemMessage(room, `${data.name} присоединился.`);
                     console.log('[Socket server] joined member: ', data.userId);
                 }, 100);
             }
@@ -154,6 +167,7 @@ export class RoomService {
         console.log('[Socket server] leave member: ', userId);
         const room: Room | undefined = this.roomsList.get(roomId);
         if (room) {
+            const member: Member | undefined = room.members.get(userId);
             room.members.delete(userId);
             socket.to(roomId).emit(ProtocolToClient.MEMBER_LEFT, userId);
             socket.leave(roomId);
@@ -162,6 +176,7 @@ export class RoomService {
             }
             this.sendRooms();
             this.sendRoom(roomId);
+            this.pushSystemMessage(room, `${member?.name} вышел.`);
         }
     }
 
@@ -196,5 +211,35 @@ export class RoomService {
                 }
             }, DELETE_ROOM_DELAY);
         }
+    }
+
+    public newMessage(data: NewMessageDto, roomId: string): void {
+        const room: Room | undefined = this.roomsList.get(roomId);
+        if (room) {
+            const message: Message = {
+                type: MessageTypes.USER,
+                userId: data.userId,
+                name: data.name,
+                avatar: data.avatar,
+                text: data.text,
+                sendTime: new Date().getTime(),
+            }
+            console.log('[Socket server] new message from: ', data.userId);
+            room.messages.push(message);
+            room.messages = room.messages.sort((messageA: Message, messageB: Message) => messageA.sendTime - messageB.sendTime);
+            this.sendMessages(roomId);
+        }
+    }
+
+    private pushSystemMessage(room: Room, text: string): void {
+        const message: Message = {
+            type: MessageTypes.SYSTEM,
+            text,
+            sendTime: new Date().getTime(),
+        }
+        console.log('[Socket server] new system message: ', text);
+        room.messages.push(message);
+        room.messages = room.messages.sort((messageA: Message, messageB: Message) => messageA.sendTime - messageB.sendTime);
+        this.sendMessages(room.id);
     }
 }

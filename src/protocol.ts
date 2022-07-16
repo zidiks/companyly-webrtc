@@ -3,6 +3,7 @@ export enum ProtocolToClient {
     MEMBER_LEFT = 'member-left',
     SHARE_JOINED = 'share-joined',
     SHARE_LEFT = 'share-left',
+    MESSAGES_LIST = 'messages-list',
     ROOMS_LIST = 'rooms-list',
     ROOM_DATA = 'room-data',
     SERVER_MESSAGE = 'system-message',

@@ -10,6 +10,8 @@ import cors  from "cors";
 import fs from "fs";
 import { RegisterMemberData } from "./room/member.model";
 import { CreateRoomData } from "./room/room.model";
+import { Message } from "./room/message.model";
+import { NewMessageDto } from "./room/dto/new-message.dto";
 
 dotenv.config();
 
@@ -71,6 +73,15 @@ io.on(SocketProtocol.connection, (socket: Socket) => {
         } catch (e) {
             console.log(e);
         }
+    });
+
+    socket.on(ProtocolToServer.NEW_MESSAGE, (data: string, roomId: string) => {
+       try {
+           const objData: NewMessageDto = JSON.parse(data) as NewMessageDto;
+           roomService.newMessage(objData, roomId);
+       } catch (e) {
+           console.log(e);
+       }
     });
 
 

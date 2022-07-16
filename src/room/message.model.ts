@@ -1,7 +1,13 @@
 export interface Message {
-    userId: string;
-    name: string;
-    avatar: string;
+    type: MessageTypes;
+    userId?: string;
+    name?: string;
+    avatar?: string;
     text: string;
     sendTime: number;
+}
+
+export enum MessageTypes {
+    USER = 'USER',
+    SYSTEM = 'SYSTEM',
 }
