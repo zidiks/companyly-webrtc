@@ -193,6 +193,16 @@ export class RoomService {
         }
     }
 
+    public disconnectedSocket(socket: Socket): void {
+        this.roomsList.forEach((room: Room) => {
+            room.members.forEach((member: Member) => {
+                if (member.socketId === socket.id) {
+                    this.leaveMember(socket, room.id, member.userId);
+                }
+            })
+        });
+    }
+
     public createRoom(data: CreateRoomData): void {
         console.log('[Socket server] created room: ', data.name);
         const roomId = uuid();

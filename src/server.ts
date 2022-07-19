@@ -54,6 +54,10 @@ const roomService = new RoomService(peerServer, io);
 io.on(SocketProtocol.connection, (socket: Socket) => {
     roomService.connectedClient(socket);
 
+    socket.on('disconnect', function(){
+        roomService.disconnectedSocket(socket);
+    });
+
     socket.on(ProtocolToServer.JOIN_MEMBER, (roomId: string, data: string, key?: string) => {
         try {
             const objData: RegisterMemberData = JSON.parse(data) as RegisterMemberData;
