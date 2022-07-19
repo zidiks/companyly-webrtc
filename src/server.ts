@@ -12,6 +12,7 @@ import { RegisterMemberData } from "./room/member.model";
 import { CreateRoomData } from "./room/room.model";
 import { Message } from "./room/message.model";
 import { NewMessageDto } from "./room/dto/new-message.dto";
+import { UpdateMemberDto } from "./room/dto/update-member.dto";
 
 dotenv.config();
 
@@ -64,6 +65,15 @@ io.on(SocketProtocol.connection, (socket: Socket) => {
 
     socket.on(ProtocolToServer.LEAVE_MEMBER, (roomId: string, userId: string) => {
         roomService.leaveMember(socket, roomId, userId);
+    });
+
+    socket.on(ProtocolToServer.UPDATE_MEMBER, (roomId: string, data: string) => {
+        try {
+            const objData: UpdateMemberDto = JSON.parse(data) as UpdateMemberDto;
+            roomService.updateMember(socket, roomId, objData);
+        } catch (e) {
+            console.log(e);
+        }
     });
 
     socket.on(ProtocolToServer.CREATE_ROOM, (data: string) => {

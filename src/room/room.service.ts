@@ -9,6 +9,7 @@ import { ServerMessageDisconnectedDto } from "./dto/server-message-disconnected.
 import { ServerMessageRequestKeyDto } from "./dto/server-message-request-key.dto";
 import { Message, MessageTypes } from "./message.model";
 import { NewMessageDto } from "./dto/new-message.dto";
+import { UpdateMemberDto } from "./dto/update-member.dto";
 
 const DELETE_ROOM_DELAY = 30000;
 
@@ -131,7 +132,7 @@ export class RoomService {
                     }
                     this.sendRooms();
                     this.sendRoom(roomId);
-                    this.pushSystemMessage(room, `${data.name} присоединился.`);
+                    this.pushSystemMessage(room, `${data.name} присоединился`);
                     console.log('[Socket server] joined member: ', data.userId);
                 }, 100);
             }
@@ -176,7 +177,19 @@ export class RoomService {
             }
             this.sendRooms();
             this.sendRoom(roomId);
-            this.pushSystemMessage(room, `${member?.name} вышел.`);
+            this.pushSystemMessage(room, `${member?.name} вышел`);
+        }
+    }
+
+    public updateMember(socket: Socket, roomId: string, data: UpdateMemberDto): void {
+        const room: Room | undefined = this.roomsList.get(roomId);
+        if (room) {
+            let member: Member | undefined = room.members.get(data.userId);
+            if (member && socket.id === member.socketId) {
+                member = Object.assign(member, data);
+                room.members.set(member.userId, member);
+                this.sendRoom(roomId);
+            }
         }
     }
 
@@ -230,6 +243,7 @@ export class RoomService {
             this.sendMessages(roomId);
         }
     }
+
 
     private pushSystemMessage(room: Room, text: string): void {
         const message: Message = {
