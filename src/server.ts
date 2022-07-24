@@ -80,6 +80,14 @@ io.on(SocketProtocol.connection, (socket: Socket) => {
         }
     });
 
+    socket.on(ProtocolToServer.ASSISTANT_NEW_VOICE, (roomId: string, message: string) => {
+       roomService.newAssistantVoice(socket, roomId, message);
+    });
+
+    socket.on(ProtocolToServer.FOR_ASSISTANT_VOICE, (roomId: string, message: string) => {
+        roomService.newUserVoice(socket, roomId, message);
+    });
+
     socket.on(ProtocolToServer.CREATE_ROOM, (data: string) => {
         try {
             const objData: CreateRoomData = JSON.parse(data) as CreateRoomData;

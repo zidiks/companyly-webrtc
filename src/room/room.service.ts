@@ -254,6 +254,20 @@ export class RoomService {
         }
     }
 
+    public newAssistantVoice(socket: Socket, roomId: string, message: string): void {
+        const room: Room | undefined = this.roomsList.get(roomId);
+        if (room) {
+            socket.to(roomId).emit(ProtocolToClient.ASSISTANT_VOICE, message);
+        }
+    }
+
+    public newUserVoice(socket: Socket, roomId: string, message: string): void {
+        const room: Room | undefined = this.roomsList.get(roomId);
+        if (room) {
+            socket.to(roomId).emit(ProtocolToClient.FROM_USER_VOICE, message);
+        }
+    }
+
 
     private pushSystemMessage(room: Room, text: string): void {
         const message: Message = {

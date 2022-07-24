@@ -7,6 +7,8 @@ export enum ProtocolToClient {
     ROOMS_LIST = 'rooms-list',
     ROOM_DATA = 'room-data',
     SERVER_MESSAGE = 'system-message',
+    ASSISTANT_VOICE = 'assistant-voice',
+    FROM_USER_VOICE = 'from-user-voice',
 }
 
 export enum ProtocolToServer {
@@ -17,6 +19,8 @@ export enum ProtocolToServer {
     DELETE_ROOM = 'delete-room',
     UPDATE_ROOM = 'update-room',
     NEW_MESSAGE = 'new-message',
+    ASSISTANT_NEW_VOICE = 'assistant-new-voice',
+    FOR_ASSISTANT_VOICE = 'for-assistant-voice',
 }
 
 export enum ServerMessageTypes {
