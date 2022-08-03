@@ -8,6 +8,11 @@ export class Member {
     camState: boolean = false;
     micState: boolean = false;
     screenShare: boolean = false;
+    bot?: boolean;
+    speech?: {
+        rate: number,
+        pitch: number,
+    };
 
     constructor(data: RegisterMemberData, socketId: string) {
         this.mainPeerId = data.mainPeerId;
@@ -15,6 +20,12 @@ export class Member {
         this.name = data.name;
         this.avatar = data.avatar;
         this.socketId = socketId;
+        if (data.bot) {
+            this.bot = data.bot;
+        }
+        if (data.speech) {
+            this.speech = data.speech;
+        }
     }
 }
 
@@ -23,4 +34,9 @@ export interface RegisterMemberData {
     userId: string;
     name: string;
     avatar: string;
+    bot?: boolean;
+    speech?: {
+        rate: number,
+        pitch: number,
+    };
 }

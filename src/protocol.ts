@@ -9,6 +9,8 @@ export enum ProtocolToClient {
     SERVER_MESSAGE = 'system-message',
     ASSISTANT_VOICE = 'assistant-voice',
     FROM_USER_VOICE = 'from-user-voice',
+    INVITED_ASSISTANT = 'invited-assistant',
+    KICKED_ASSISTANT = 'kicked-assistant',
 }
 
 export enum ProtocolToServer {
@@ -21,6 +23,8 @@ export enum ProtocolToServer {
     NEW_MESSAGE = 'new-message',
     ASSISTANT_NEW_VOICE = 'assistant-new-voice',
     FOR_ASSISTANT_VOICE = 'for-assistant-voice',
+    INVITE_ASSISTANT = 'invite-assistant',
+    KICK_ASSISTANT = 'kick-assistant',
 }
 
 export enum ServerMessageTypes {

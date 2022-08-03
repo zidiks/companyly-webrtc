@@ -306,4 +306,26 @@ export class RoomService {
         room.messages = room.messages.sort((messageA: Message, messageB: Message) => messageA.sendTime - messageB.sendTime);
         this.sendMessages(room.id);
     }
+
+    public inviteAssistant(roomId: string): void {
+        const room: Room | undefined = this.roomsList.get(roomId);
+        if (room) {
+            const roomBot = Array.from(room.members.values()).find((member: Member) => member.bot);
+            if (!roomBot) {
+                console.log('[Socket server] invite assistant');
+                this.socketServer.emit(ProtocolToClient.INVITED_ASSISTANT, roomId)
+            }
+        }
+    }
+
+    public kickAssistant(roomId: string): void {
+        const room: Room | undefined = this.roomsList.get(roomId);
+        if (room) {
+            const roomBot = Array.from(room.members.values()).find((member: Member) => member.bot);
+            if (roomBot) {
+                console.log('[Socket server] kick assistant');
+                this.socketServer.emit(ProtocolToClient.KICKED_ASSISTANT, roomId)
+            }
+        }
+    }
 }

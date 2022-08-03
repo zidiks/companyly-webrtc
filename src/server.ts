@@ -60,7 +60,6 @@ io.on(SocketProtocol.connection, (socket: Socket) => {
     });
 
     socket.on(ProtocolToServer.JOIN_MEMBER, (roomId: string, data: string, key?: string) => {
-        console.log('check');
         try {
             const objData: RegisterMemberData = JSON.parse(data) as RegisterMemberData;
             roomService.joinMember(socket, roomId, objData, key || null);
@@ -115,7 +114,15 @@ io.on(SocketProtocol.connection, (socket: Socket) => {
         } catch (e) {
             console.log(e);
         }
-    })
+    });
+
+    socket.on(ProtocolToServer.INVITE_ASSISTANT, (roomId: string) => {
+        roomService.inviteAssistant(roomId);
+    });
+
+    socket.on(ProtocolToServer.KICK_ASSISTANT, (roomId: string) => {
+        roomService.kickAssistant(roomId);
+    });
 });
 
 serverSocket.listen(portSocket, () => {
