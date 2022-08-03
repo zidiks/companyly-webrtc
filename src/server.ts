@@ -60,6 +60,7 @@ io.on(SocketProtocol.connection, (socket: Socket) => {
     });
 
     socket.on(ProtocolToServer.JOIN_MEMBER, (roomId: string, data: string, key?: string) => {
+        console.log('check');
         try {
             const objData: RegisterMemberData = JSON.parse(data) as RegisterMemberData;
             roomService.joinMember(socket, roomId, objData, key || null);

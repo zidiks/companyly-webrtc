@@ -120,14 +120,16 @@ export class RoomService {
                         mainPeerId: data.mainPeerId,
                         userId: data.userId,
                     }));
-                    socket.emit(ProtocolToClient.SERVER_MESSAGE, RoomService.serverMessageJSON<ServerMessageConnectedDto>({
-                        code: ServerMessageTypes.CONNECTED,
-                        message: {
-                            roomId: roomId,
-                            mainPeerId: data.mainPeerId,
-                            userId: data.userId,
-                        }
-                    }));
+                    setTimeout(() => {
+                        socket.emit(ProtocolToClient.SERVER_MESSAGE, RoomService.serverMessageJSON<ServerMessageConnectedDto>({
+                            code: ServerMessageTypes.CONNECTED,
+                            message: {
+                                roomId: roomId,
+                                mainPeerId: data.mainPeerId,
+                                userId: data.userId,
+                            }
+                        }));
+                    }, 100);
                     if (room.startTime === null) {
                         room.startTime = new Date().getTime();
                     }
@@ -138,7 +140,7 @@ export class RoomService {
                 }, 100);
             }
             if (room.privateMode) {
-                if (room.invites.has(data.userId)) {
+                if (room.invites.has(data.userId.toString())) {
                     join();
                 } else if (key !== null) {
                     if (key === room.key) {
@@ -242,7 +244,7 @@ export class RoomService {
                 this.sendRooms();
                 this.sendRoom(roomId);
             } else {
-                console.log('Not allowed!');
+                console.log('[Socket server] Action not allowed!');
             }
         }
     }
