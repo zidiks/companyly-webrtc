@@ -10,6 +10,7 @@ import { ServerMessageRequestKeyDto } from "./dto/server-message-request-key.dto
 import { Message, MessageTypes } from "./message.model";
 import { NewMessageDto } from "./dto/new-message.dto";
 import { UpdateMemberDto } from "./dto/update-member.dto";
+import { UpdateRoomDto } from "./dto/update-room.dto";
 
 const DELETE_ROOM_DELAY = 30000;
 
@@ -221,6 +222,29 @@ export class RoomService {
             }
         );
         this.sendRooms();
+    }
+
+    public updateRoom(socket: Socket, data: UpdateRoomDto, roomId: string, userId: string): void {
+        const room: Room | undefined = this.roomsList.get(roomId);
+        if (room) {
+            let member: Member | undefined = room.members.get(userId);
+            if (member && socket.id === member.socketId && room.moderators.has(member.userId.toString())) {
+                this.roomsList.set(
+                    roomId,
+                    {
+                        ...room,
+                        name: data.name,
+                        privateMode: data.privateMode,
+                        moderators: new Set(data.moderators),
+                        invites: new Set(data.invites),
+                    }
+                );
+                this.sendRooms();
+                this.sendRoom(roomId);
+            } else {
+                console.log('Not allowed!');
+            }
+        }
     }
 
     public deleteRoom(roomId: string): void {
