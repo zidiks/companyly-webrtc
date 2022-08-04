@@ -12,6 +12,7 @@ export class Member {
     speech?: {
         rate: number,
         pitch: number,
+        volume: number,
     };
 
     constructor(data: RegisterMemberData, socketId: string) {
@@ -38,5 +39,6 @@ export interface RegisterMemberData {
     speech?: {
         rate: number,
         pitch: number,
+        volume: number,
     };
 }

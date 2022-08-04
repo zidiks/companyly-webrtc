@@ -108,12 +108,19 @@ export class RoomService {
                         }
                     }
                 }
-                room.members.set(data.userId, new Member({
+                const memberData: RegisterMemberData = {
                     mainPeerId: data.mainPeerId,
                     userId: data.userId,
                     name: data.name,
                     avatar: data.avatar,
-                }, socket.id));
+                };
+                if (data.bot) {
+                    memberData.bot = true;
+                }
+                if (data.speech) {
+                    memberData.speech = data.speech;
+                }
+                room.members.set(data.userId, new Member(memberData, socket.id));
                 socket.join(roomId);
                 setTimeout(() => {
                     socket.to(roomId).emit(ProtocolToClient.MEMBER_JOINED, JSON.stringify({
@@ -294,7 +301,6 @@ export class RoomService {
         }
     }
 
-
     private pushSystemMessage(room: Room, text: string): void {
         const message: Message = {
             type: MessageTypes.SYSTEM,
@@ -313,7 +319,11 @@ export class RoomService {
             const roomBot = Array.from(room.members.values()).find((member: Member) => member.bot);
             if (!roomBot) {
                 console.log('[Socket server] invite assistant');
-                this.socketServer.emit(ProtocolToClient.INVITED_ASSISTANT, roomId)
+                const botId: string = uuid();
+                room.invites.add(botId);
+                this.sendRooms();
+                this.sendRoom(roomId);
+                this.socketServer.emit(ProtocolToClient.INVITED_ASSISTANT, roomId, botId);
             }
         }
     }
@@ -324,6 +334,9 @@ export class RoomService {
             const roomBot = Array.from(room.members.values()).find((member: Member) => member.bot);
             if (roomBot) {
                 console.log('[Socket server] kick assistant');
+                room.invites.delete(roomBot.userId);
+                this.sendRooms();
+                this.sendRoom(roomId);
                 this.socketServer.emit(ProtocolToClient.KICKED_ASSISTANT, roomId)
             }
         }
