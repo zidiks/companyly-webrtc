@@ -11,6 +11,8 @@ import { Message, MessageTypes } from "./message.model";
 import { NewMessageDto } from "./dto/new-message.dto";
 import { UpdateMemberDto } from "./dto/update-member.dto";
 import { UpdateRoomDto } from "./dto/update-room.dto";
+import axios from "axios";
+import { environment } from "../env";
 
 const DELETE_ROOM_DELAY = 30000;
 
@@ -238,6 +240,14 @@ export class RoomService {
         if (room) {
             let member: Member | undefined = room.members.get(userId);
             if (member && socket.id === member.socketId && room.moderators.has(member.userId.toString())) {
+                data.invites.forEach((invite: string) => {
+                    if (!room.invites.has(invite)) {
+                        console.log('post');
+                        axios.post(`${environment.host}:${environment.syncPort}/meeting_invite`, {
+                            testData: 'test'
+                        });
+                    }
+                });
                 this.roomsList.set(
                     roomId,
                     {

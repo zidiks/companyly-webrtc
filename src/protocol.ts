@@ -42,6 +42,7 @@ export interface ServerMessage<T> {
 
 export enum SocketProtocol {
     connection = 'connection',
+    disconnect = 'disconnect',
 }
 
 export enum PeerProtocol {

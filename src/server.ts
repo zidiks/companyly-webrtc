@@ -10,15 +10,15 @@ import cors  from "cors";
 import fs from "fs";
 import { RegisterMemberData } from "./room/member.model";
 import { CreateRoomData } from "./room/room.model";
-import { Message } from "./room/message.model";
 import { NewMessageDto } from "./room/dto/new-message.dto";
 import { UpdateMemberDto } from "./room/dto/update-member.dto";
 import { UpdateRoomDto } from "./room/dto/update-room.dto";
+import { environment } from "./env";
 
 dotenv.config();
 
-const portSocket = process.env.SOCKET_PORT;
-const portPeer = process.env.PEER_PORT;
+const portSocket = environment.socketPort;
+const portPeer = environment.peerPort;
 
 const appSocket: Express = express();
 appSocket.use(cors());
@@ -55,7 +55,7 @@ const roomService = new RoomService(peerServer, io);
 io.on(SocketProtocol.connection, (socket: Socket) => {
     roomService.connectedClient(socket);
 
-    socket.on('disconnect', function(){
+    socket.on(SocketProtocol.disconnect, function(){
         roomService.disconnectedSocket(socket);
     });
 
