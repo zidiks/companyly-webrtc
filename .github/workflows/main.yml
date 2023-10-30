@@ -1,0 +1,19 @@
+name: companyly-webrtc CI/CD
+
+on:
+  push:
+    branches: [master]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Publish to Registry
+        uses: elgohr/Publish-Docker-Github-Action@v5
+        with:
+          registry: docker.pkg.github.com
+          name: zidiks/companyly-webrtc/image
+          username: ${{ github.actor }}
+          password: ${{ secrets.CI_CD_TOKEN }}
+          tags: 'production'

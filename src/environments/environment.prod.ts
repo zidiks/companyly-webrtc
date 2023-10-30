@@ -1,6 +1,6 @@
 export const environment = {
-  host: 'https://clikl.ru',
-  syncPort: 3005,
-  socketPort: 3002,
-  peerPort: 3001,
+  host: process.env.API_HOST,
+  syncPort: process.env.HTTP_PORT,
+  socketPort: process.env.SOCKET_PORT,
+  peerPort: process.env.PEER_PORT,
 };
