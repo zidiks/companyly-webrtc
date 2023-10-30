@@ -25,7 +25,8 @@ appSocket.use(cors());
 const appPeer: Express = express();
 appPeer.use(cors());
 
-const dev: boolean = process.env.npm_lifecycle_script === 'nodemon';
+// const dev: boolean = process.env.npm_lifecycle_script === 'nodemon';
+const dev: boolean = true;
 
 if (dev) {
     console.log('Running in dev mode');
